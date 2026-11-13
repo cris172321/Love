@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>A Love Letter For You ♡</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@400;600;700&family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient Floating Heart Background Canvas -->
+  <canvas id="heartCanvas"></canvas>
+
+  <!-- Sound Toggle & Edit Button in Top Bar -->
+  <div class="top-controls">
+    <button id="editNameBtn" class="pill-btn" title="Customize Names">
+      <span class="btn-icon">✏️</span> <span class="btn-text">Customize</span>
+    </button>
+    <button id="audioToggleBtn" class="pill-btn" title="Toggle Sound">
+      <span id="audioIcon">🎵</span> <span id="audioText">Music: OFF</span>
+    </button>
+  </div>
+
+  <!-- Customization Modal -->
+  <div id="customizeModal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span>Settings ♡</span>
+        <button id="closeModalBtn" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <label for="senderInput">Your Name (Sender):</label>
+        <input type="text" id="senderInput" value="Irfan" maxlength="20" placeholder="e.g. Irfan">
+        
+        <label for="receiverInput">Their Name / Nickname:</label>
+        <input type="text" id="receiverInput" value="You" maxlength="20" placeholder="e.g. My Love">
+
+        <label for="customMessageInput">Custom Proposal Message:</label>
+        <input type="text" id="customMessageInput" value="Do you want to be my girlfriend?" maxlength="40">
+
+        <div class="modal-actions">
+          <button id="saveNamesBtn" class="retro-btn save-btn">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Interactive Container -->
+  <main class="main-container">
+
+    <!-- ================= SCENE 1: CUPID'S BOW & ENVELOPE ================= -->
+    <section id="sceneEnvelope" class="scene active">
+      
+      <!-- Dashed Border Envelope Card (Screenshot 1) -->
+      <div class="envelope-outer-card">
+        <div class="envelope-wrapper" id="envelopeWrapper">
+          <div class="envelope" id="envelope">
+            <!-- Envelope Flap (Back) -->
+            <div class="envelope-back"></div>
+            
+            <!-- Letter peek inside -->
+            <div class="letter-peek" id="letterPeek">
+              <div class="letter-lines"></div>
+            </div>
+
+            <!-- Envelope Flap (Front Fold) -->
+            <div class="envelope-flap" id="envelopeFlap"></div>
+            
+            <!-- Envelope Front Pockets -->
+            <div class="envelope-pocket-left"></div>
+            <div class="envelope-pocket-right"></div>
+            <div class="envelope-pocket-bottom"></div>
+
+            <!-- Heart Seal Target -->
+            <div class="heart-seal" id="heartSeal" title="Aim for the heart!">
+              <svg viewBox="0 0 32 32" class="seal-heart-svg">
+                <path d="M16,28.5 C16,28.5 3,19.5 3,11 C3,6.5 6.5,3 11,3 C13.6,3 15.1,4.5 16,5.8 C16.9,4.5 18.4,3 21,3 C25.5,3 29,6.5 29,11 C29,19.5 16,28.5 16,28.5 Z" />
+              </svg>
+              <div class="seal-glow"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sender Caption -->
+      <div class="sender-caption" id="senderCaption">
+        <span class="heart-icon">❤</span>
+        <span id="captionText">From <span class="highlight-name" id="senderDisplayName">Irfan</span> For <span class="highlight-name" id="receiverDisplayName">You</span></span>
+        <span class="heart-icon">❤</span>
+      </div>
+
+      <!-- Arrow & Bow Area -->
+      <div class="bow-arena" id="bowArena">
+        <!-- Flying Arrow Element -->
+        <div class="flying-arrow" id="flyingArrow">
+          <svg viewBox="0 0 24 100" class="arrow-svg">
+            <!-- Arrow shaft -->
+            <line x1="12" y1="18" x2="12" y2="86" stroke="#c0392b" stroke-width="2.5" stroke-linecap="round" />
+            <!-- Arrow Heart Head -->
+            <path d="M12,4 C10.5,1 7,2 7,6 C7,9 12,14 12,14 C12,14 17,9 17,6 C17,2 13.5,1 12,4 Z" fill="#e74c3c" />
+            <!-- Fletching -->
+            <path d="M7,82 L12,76 L17,82" stroke="#e74c3c" stroke-width="2" fill="none" stroke-linecap="round" />
+            <path d="M7,90 L12,84 L17,90" stroke="#e74c3c" stroke-width="2" fill="none" stroke-linecap="round" />
+          </svg>
+        </div>
+
+        <!-- Cupid's Bow Interactive Component -->
+        <div class="bow-container" id="bowContainer">
+          <svg viewBox="0 0 160 120" class="bow-svg" id="bowSvg">
+            <!-- Bow Wood Limb -->
+            <path id="bowLimb" d="M 28 85 Q 80 18 132 85" fill="none" stroke="#cf8e42" stroke-width="8" stroke-linecap="round" />
+            <path d="M 28 85 Q 80 20 132 85" fill="none" stroke="#eab86a" stroke-width="3" stroke-linecap="round" />
+            
+            <!-- Bow string (Left half & Right half meeting at notch) -->
+            <path id="bowString" d="M 28 85 Q 80 85 132 85" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.9" />
+
+            <!-- Loaded Arrow inside Bow -->
+            <g id="loadedArrow">
+              <line x1="80" y1="20" x2="80" y2="88" stroke="#c0392b" stroke-width="2.5" stroke-linecap="round" />
+              <!-- Heart Tip -->
+              <path d="M80,8 C78.5,5 75,6 75,10 C75,13 80,18 80,18 C80,18 85,13 85,10 C85,6 81.5,5 80,8 Z" fill="#e74c3c" />
+              <!-- Feathers -->
+              <path d="M75,82 L80,76 L85,82" stroke="#e74c3c" stroke-width="2" fill="none" stroke-linecap="round" />
+              <path d="M75,90 L80,84 L85,90" stroke="#e74c3c" stroke-width="2" fill="none" stroke-linecap="round" />
+            </g>
+          </svg>
+          <div class="bow-pulse"></div>
+        </div>
+
+        <!-- Hint Prompt -->
+        <div class="bow-hint" id="bowHint">
+          <p>Aim for the heart ♡</p>
+          <span class="sub-hint">(Click bow or drag to shoot!)</span>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================= SCENE 2 & 3: RETRO LOVE WINDOW (Screenshots 2 & 3) ================= -->
+    <section id="sceneWindow" class="scene">
+      <div class="retro-window" id="loveWindow">
+        <!-- Window Title Bar -->
+        <div class="window-titlebar">
+          <div class="title-left">
+            <span class="pixel-title">LOVE</span>
+          </div>
+          <div class="title-controls">
+            <span class="window-btn win-min">―</span>
+            <span class="window-btn win-max">□</span>
+            <span class="window-btn win-close">✕</span>
+          </div>
+        </div>
+
+        <!-- Window Inner Gingham Content -->
+        <div class="window-content">
+          <!-- Top Row Hearts -->
+          <div class="window-hearts">
+            <span class="sparkle-heart">♥</span>
+            <span class="sparkle-heart">♥</span>
+            <span class="sparkle-heart">♥</span>
+          </div>
+
+          <!-- Question / Success Header -->
+          <h2 class="love-question" id="loveQuestion">Do you want to be my girlfriend? ♡</h2>
+
+          <!-- Pixel Cat Canvas / Art Container -->
+          <div class="cat-stage">
+            <canvas id="pixelCatCanvas" width="160" height="160"></canvas>
+            <div id="heartFloater" class="floating-pixel-heart hidden">♥</div>
+          </div>
+
+          <!-- State A: Question Buttons (YES / NO) -->
+          <div class="proposal-actions" id="proposalActions">
+            <button id="btnYes" class="retro-button yes-button">YES</button>
+            <button id="btnNo" class="retro-button no-button">NO</button>
+          </div>
+
+          <!-- State B: Success Message & Love Badge (Screenshot 3) -->
+          <div class="success-content hidden" id="successContent">
+            <p class="sweet-message" id="sweetMessage">I'm really happy you can accept me</p>
+            <div class="love-badge-wrapper">
+              <button class="love-badge" id="loveBadge">I LOVE YOU ♥</button>
+            </div>
+            <div class="celebrate-actions">
+              <button id="replayBtn" class="replay-btn">Shoot Bow Again 🏹</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
